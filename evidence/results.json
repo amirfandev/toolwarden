@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "adversarial_allowed_zero": true,
+    "all_deny_kinds_covered": true,
+    "expectation_mismatches_empty": true,
+    "order_independent_records": true,
+    "secret_leaks_zero": true
+  },
+  "checks_passed": true,
+  "confusion": {
+    "expected_allow__actual_allow": 10,
+    "expected_allow__actual_deny": 0,
+    "expected_deny__actual_allow": 0,
+    "expected_deny__actual_deny": 51
+  },
+  "denial_kind_counts": {
+    "malformed_call": 3,
+    "no_permit": 2,
+    "policy_error": 4,
+    "policy_forbade": 27,
+    "ungoverned": 2,
+    "unparseable": 21
+  },
+  "denials_by_policy": {
+    "db_read_scope": 1,
+    "engine": 7,
+    "fax_covered_entity": 3,
+    "internal_email_only": 12,
+    "phi_minimum_necessary": 9,
+    "prod_db_read_only": 18,
+    "rig_crash": 1,
+    "rig_illegal_allow": 1,
+    "rig_non_verdict": 1,
+    "rig_undeclared": 1,
+    "spend_cap": 5
+  },
+  "deny_kinds_covered": [
+    "malformed_call",
+    "no_permit",
+    "policy_error",
+    "policy_forbade",
+    "ungoverned",
+    "unparseable"
+  ],
+  "deny_kinds_missing": [],
+  "expectation_mismatches": [],
+  "headline": {
+    "adversarial_allowed": 0,
+    "adversarial_allowed_ids": [],
+    "adversarial_total": 34
+  },
+  "headline_kind_counts": {
+    "malformed_call": 3,
+    "no_permit": 2,
+    "policy_error": 4,
+    "policy_forbade": 26,
+    "ungoverned": 2,
+    "unparseable": 14
+  },
+  "permits_by_policy": {
+    "db_read_scope": 4,
+    "fax_covered_entity": 2,
+    "internal_email_only": 4,
+    "rig_allow_companion": 1,
+    "spend_cap": 2
+  },
+  "policyset_sha256_main": "d32b022cc04a",
+  "policyset_sha256_rigged": "d5f321082d64",
+  "record_body_mismatches_across_registration_orders": 0,
+  "secret_leak_occurrences": 0,
+  "totals": {
+    "adversarial": 34,
+    "allowed": 10,
+    "cases": 61,
+    "corpus": 27,
+    "denied": 51
+  }
+}

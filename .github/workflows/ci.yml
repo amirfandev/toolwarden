@@ -139,7 +139,7 @@ jobs:
       - name: Install with no extras (the evidence run is stdlib only)
         run: python -m pip install .
       - name: Replay the corpus and check every expectation
-        run: python evidence/run.py
+        run: python evidence/recompute.py
       - name: Confirm the replay modified no committed evidence file
         run: git diff --exit-code -- evidence/
 

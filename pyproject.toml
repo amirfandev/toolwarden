@@ -1,0 +1,146 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "toolwarden"
+version = "0.1.0"
+description = "A deterministic policy gate between an LLM agent and its tools: every call is allowed or denied by code before it executes, denied by default, and logged for audit."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Muhammad Irfan", email = "irfan@chatari.com" }]
+keywords = [
+    "llm",
+    "agents",
+    "tool-calling",
+    "policy",
+    "guardrails",
+    "deny-by-default",
+    "audit",
+    "safety",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+# The core is stdlib only. Anything appearing here breaks the central promise
+# of the package; CI has a job that fails if this list grows.
+dependencies = []
+
+[project.optional-dependencies]
+openai-agents = [
+    "openai-agents",
+]
+# The Anthropic loop adapter itself is stdlib only (it handles duck-typed
+# message objects and never imports the SDK); this extra installs the client
+# a host needs to run that loop end to end.
+anthropic = [
+    "anthropic",
+]
+# wrap_tool_call is a langchain 1.x middleware hook; earlier majors lack it.
+langchain = [
+    "langchain>=1.0",
+]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+]
+
+[project.scripts]
+toolwarden-hook = "toolwarden.hook:main"
+
+[project.urls]
+Repository = "https://github.com/amirfandev/toolwarden"
+Issues = "https://github.com/amirfandev/toolwarden/issues"
+Changelog = "https://github.com/amirfandev/toolwarden/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/toolwarden"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".spike",
+    ".github",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # import sorting
+    "UP",  # pyupgrade, keeps 3.11+ idioms honest
+    "B",   # bugbear
+    "C4",  # comprehension cleanups
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Corpus cases, case matrices, and golden records embed adversarial inputs and
+# expected reason strings verbatim; wrapping those strings to satisfy the line
+# limit would change the fixture under test.
+"tests/**" = ["E501"]
+"evidence/**" = ["E501"]
+"examples/**" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["toolwarden"]
+
+[tool.mypy]
+# No python_version pin. Pinning it to the floor makes mypy parse every
+# installed stub under that version's grammar, and a dependency whose stubs
+# use newer syntax then fails the check for reasons that have nothing to do
+# with this package. The CI matrix runs mypy on 3.11, 3.12 and 3.13, so each
+# version is checked by the interpreter that has to run the code, which is
+# stronger than one pinned assumption.
+strict = true
+files = ["src"]
+
+# Adapter frameworks are optional extras, lazy-imported inside factory
+# functions. The dev environment installs none of them, so mypy must not fail
+# on their absence; when one IS installed, follow_imports = "skip" keeps its
+# stubs from being parsed and judged here. Facts about a framework's stubs
+# must not turn a working install into a failing check.
+[[tool.mypy.overrides]]
+follow_imports = "skip"
+module = [
+    "agents",
+    "agents.*",
+    "langchain",
+    "langchain.*",
+    "langchain_core.*",
+    "anthropic",
+    "anthropic.*",
+]
+ignore_missing_imports = true
+
+# Spec section 10: strict applies to the core; adapters are checked against
+# installed stubs when present. With no framework installed every framework
+# object is Any, so the Any-driven strict flags would report the absence of
+# an optional dependency rather than a defect. Untyped defs stay forbidden:
+# adapter signatures are ours and remain fully annotated.
+[[tool.mypy.overrides]]
+module = ["toolwarden.adapters.*"]
+disallow_any_generics = false
+disallow_subclassing_any = false
+disallow_untyped_decorators = false
+warn_return_any = false
+warn_unused_ignores = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

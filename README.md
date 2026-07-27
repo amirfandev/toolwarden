@@ -1,5 +1,10 @@
 # toolwarden
 
+[![CI](https://github.com/amirfandev/toolwarden/actions/workflows/ci.yml/badge.svg)](https://github.com/amirfandev/toolwarden/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/toolwarden?cacheSeconds=3600)](https://pypi.org/project/toolwarden/)
+[![Python](https://img.shields.io/pypi/pyversions/toolwarden?cacheSeconds=3600)](https://pypi.org/project/toolwarden/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A deterministic gate between an LLM agent and its tools. Every tool call is
 checked against policy before it executes and is allowed or denied by code
 that returns the same answer every time, not by a model. Every decision is
